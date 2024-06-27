@@ -3,9 +3,8 @@ import "./profileUpdatePage.scss";
 import { AuthContext } from "../../context/AuthContext";
 // import apiRequest from "../../lib/apiRequest";
 import { useNavigate } from "react-router-dom";
-import apiRequest from "../../lib/apiRequest";
+import { userRequest } from "../../lib/apiRequest";
 import UploadWidget from "../../components/uploadWidget/UploadWidget";
-// import UploadWidget from "../../components/uploadWidget/UploadWidget";
 
 function ProfileUpdatePage() {
   const { currentUser, updateUser } = useContext(AuthContext);
@@ -19,7 +18,8 @@ function ProfileUpdatePage() {
 
     const {username,email,password} = Object.fromEntries(formData);
     try{
-      const res = await apiRequest.put(`/user/${currentUser.id}`,{
+      const axiosInstance = userRequest(currentUser?.accessToken)
+      const res = await axiosInstance.put(`/user/${currentUser.id}`,{
         username,
         email,
         password,
@@ -43,7 +43,7 @@ function ProfileUpdatePage() {
               id="username"
               name="username"
               type="text"
-              defaultValue={currentUser.username}
+              defaultValue={currentUser.userInfo.username}
             />
           </div>
           <div className="item">
@@ -52,19 +52,19 @@ function ProfileUpdatePage() {
               id="email"
               name="email"
               type="email"
-              defaultValue={currentUser.email}
+              defaultValue={currentUser.userInfo.email}
             />
           </div>
           <div className="item">
             <label htmlFor="password">Password</label>
             <input id="password" name="password" type="password" />
           </div>
-          <button>Update</button>
+          <button>Update</button>userInfo.
           {error && <span>error</span>}
         </form>
       </div>
       <div className="sideContainer">
-        <img src={avatar[0]||currentUser.avatar || "/noavatar.jpg"} alt="" className="avatar" />
+        <img src={avatar[0]||currentUser.userInfo.avatar || "/noavatar.jpg"} alt="" className="avatar" />
         <UploadWidget uwConfig={{
           cloudName : 'dxhyjkbgx',
           uploadPreset:"estate",

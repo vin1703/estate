@@ -1,11 +1,12 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import "./chat.scss";
 import { AuthContext } from "../../context/AuthContext";
-import apiRequest from "../../lib/apiRequest";
+import  { userRequest } from "../../lib/apiRequest";
 import { format } from "timeago.js";
 import { SocketContext } from "../../context/SocketContext";
 
 function Chat({ chats }) {
+  console.log(chats);
   const [chat, setChat] = useState(null);
   const { currentUser } = useContext(AuthContext);
   const { socket } = useContext(SocketContext);
@@ -18,7 +19,8 @@ function Chat({ chats }) {
 
   const handleOpenChat = async (id, receiver) => {
     try {
-      const res = await apiRequest("/chat/" + id);
+      const axiosInstance = userRequest(currentUser?.accessToken)
+      const res = await axiosInstance.get("/chat/" + id);
       setChat({ ...res.data, receiver });
     } catch (err) {
       console.log(err);
@@ -33,7 +35,8 @@ function Chat({ chats }) {
 
     if (!text) return;
     try {
-      const res = await apiRequest.post("/message/" + chat.id, { text });
+      const axiosInstance = userRequest(currentUser?.accessToken)
+      const res = await axiosInstance.post("/message/" + chat.id, { text });
       setChat((prev) => ({ ...prev, messages: [...prev.messages, res.data] }));
       e.target.reset();
       socket.emit("sendMessage", {
@@ -48,7 +51,8 @@ function Chat({ chats }) {
   useEffect(() => {
     const read = async () => {
       try {
-        await apiRequest.put("/chat/read/" + chat.id);
+        const axiosInstance = userRequest(currentUser?.accessToken)
+        await axiosInstance.put("/chat/read/" + chat.id);
       } catch (err) {
         console.log(err);
       }
@@ -77,7 +81,7 @@ function Chat({ chats }) {
             key={c.id}
             style={{
               backgroundColor:
-                c.seenBy.includes(currentUser.id) || chat?.id === c.id
+                c.seenBy.includes(currentUser.userInfo.id) || chat?.id === c.id
                   ? "white"
                   : "#fecd514e",
             }}
@@ -102,18 +106,18 @@ function Chat({ chats }) {
           </div>
           <div className="center">
             {chat.messages.map((message) => {
-              console.log("Message ID:", message.userId);
-              console.log("Current User ID:", currentUser.id);
+              // console.log("Message ID:", message.userId);
+              // console.log("Current User ID:", currentUser.userInfo.id);
               return (
                 <div
                   className="chatMessage"
                   style={{
                     alignSelf:
-                      message.userId === currentUser.id
+                      message.userId === currentUser.userInfo.id
                         ? "flex-end"
                         : "flex-start",
                     textAlign:
-                      message.userId === currentUser.id ? "right" : "left",
+                      message.userId === currentUser.userInfo.id ? "right" : "left",
                   }}
                   key={message.id}
                 >

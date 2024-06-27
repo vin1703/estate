@@ -13,14 +13,12 @@ function Navbar() {
             <img src="/logo.png" alt="" />
             <span>RealEstate</span>
           </a>
-          <a href="">Home</a>
-          <a href="">About</a>
-          <a href="">Contact</a>
-          <a href="">Agents</a>
+          <Link to='/'>Home</Link>
+          <Link to='/list'>Apartments</Link>
         </div>
         <div  className="right">
           {currentUser ? <div className="user">
-            <img src={currentUser?.avatar || '/noavatar.jpg'} alt="" />
+            <img src={currentUser?.userInfo.avatar || '/noavatar.jpg'} alt="" />
             <span>{currentUser?.username}</span>
             <Link to='/profile' className='profile'>
               <div className="notification">3</div>
@@ -28,8 +26,8 @@ function Navbar() {
             </Link>
           </div>:
           <>
-          <Link to="/login">Sign In</Link>
-          <Link to="/register" className='register' >Sign Up</Link></>}
+          <Link style={{zIndex:"999"}} to="/login">Sign In</Link>
+          <Link style={{zIndex:"999"}} to="/register" className='register' >Sign Up</Link></>}
           <div className="menuIcon">
             <img src="/menu.png" alt="" onClick={()=>setOpen(prev=>!prev)} />
           </div>

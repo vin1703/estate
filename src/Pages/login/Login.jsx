@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import "./login.scss";
 import { Link, useNavigate } from "react-router-dom";
-import apiRequest from "../../lib/apiRequest";
+import  { publicRequest } from "../../lib/apiRequest";
 import { AuthContext } from "../../context/AuthContext";
 
 function Login() {
@@ -17,8 +17,8 @@ function Login() {
         const username = formData.get('username');
         const password = formData.get('password');
         try{
-            const res = await apiRequest.post('/auth/login',{username,password});
-
+            const res = await publicRequest.post('/auth/login',{username,password});
+            // console.log("userData:"+res.data.accessToken);
             updateUser(res.data);
             navigate('/');
         }catch(err){

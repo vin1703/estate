@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import "./newPostPage.scss";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import apiRequest from "../../lib/apiRequest";
+import apiRequest, { userRequest } from "../../lib/apiRequest";
 import UploadWidget from "../../components/uploadWidget/UploadWidget";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 
 function NewPostPage() {
+  const {currentUser} = useContext(AuthContext);
   const [value, setValue] = useState("");
   const [images, setImages] = useState([]);
   const [error, setError] = useState("");
@@ -18,7 +20,8 @@ function NewPostPage() {
     const inputs = Object.fromEntries(formData);
     console.log(inputs);
     try {
-      const res = await apiRequest.post("/post", {
+      const axiosInstance = userRequest(currentUser?.accessToken)
+      const res = await axiosInstance.post("/post", {
         postData: {
           title: inputs.title,
           price: parseInt(inputs.price),

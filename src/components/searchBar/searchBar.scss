@@ -74,15 +74,17 @@
 
     a{
       flex: 1;
-      background-color: #fece51;
+      background-color: #127782;
       display: flex;
       align-items: center;
       justify-content: center;
+      // border-radius: 4px;
 
       button {
         border: none;
         cursor: pointer;
-        background-color: #fece51;
+        background-color: #127782;
+        border-radius: 4px;
         
         @include sm{
           padding: 10px;

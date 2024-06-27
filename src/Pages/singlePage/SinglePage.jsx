@@ -2,27 +2,68 @@ import React, { useContext, useState } from 'react'
 import './singlePage.scss'
 import Slider from '../../components/slider/Slider'
 import Map from '../../components/map/Map'
-import { userData } from '../../lib/dummydata'
-import { redirect, useLoaderData } from 'react-router-dom'
+// import {singlePostData ,userData } from '../../lib/dummydata'
+import { redirect, useLoaderData, useNavigate } from 'react-router-dom'
 import DOMPurify from 'dompurify'
 import {AuthContext} from "../../context/AuthContext"
-import apiRequest from '../../lib/apiRequest'
+import  { userRequest } from '../../lib/apiRequest'
 
 function SinglePage() {
-  const singlePostData = useLoaderData();
-  const [saved,setSaved] = useState(singlePostData.isSaved)
+  // console.log("inside ")
   const{ currentUser }= useContext(AuthContext)
+
+  // console.log("tokens:"+ currentUser.accessToken);
+  const singlePostData = useLoaderData();
+  console.log(singlePostData)
+  const [saved,setSaved] = useState(singlePostData.isSaved)
+  
   const handleSave = async(e)=>{
     setSaved(prev=>!prev);
     if(!currentUser){
       redirect("/login");
     }
     try{
-      await apiRequest.post('/post/save',{postId:singlePostData.id});
+      const axiosInstance = userRequest(currentUser?.accessToken)
+      await axiosInstance.post('/post/save',{postId:singlePostData.id});
     }catch(err){
       console.log(err);
     }
   }
+  //handle chat func
+  const navigate = useNavigate();
+  const [chat,setChat] = useState(null);
+  const handleOpenChat = async () => {
+    try {
+      const axiosInstance = userRequest(currentUser?.accessToken);
+      const res = await axiosInstance.post('/chat',{receiverId:singlePostData.user.id});
+      // console.log(res.data);
+      if(res)navigate('/profile')
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const text = formData.get("text");
+
+    if (!text) return;
+    try {
+      const axiosInstance = userRequest(currentUser?.accessToken)
+      const res = await axiosInstance.post("/message/" + chat.id, { text });
+      setChat((prev) => ({ ...prev, messages: [...prev.messages, res.data] }));
+      e.target.reset();
+      socket.emit("sendMessage", {
+        receiverId: chat.receiver.id,
+        data: res.data,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  //ends
   console.log(singlePostData)
   return (
     <div className="singlePage">
@@ -40,7 +81,7 @@ function SinglePage() {
                 <div className="price">$ {singlePostData.price}</div>
               </div>
               <div className="user">
-                <img src={singlePostData.user.avatar} alt="" />
+                <img src={singlePostData.user.avatar||'/noavatar.jpg'} alt="" />
                 <span>{singlePostData.user.username}</span>
               </div>
             </div>
@@ -117,11 +158,54 @@ function SinglePage() {
           <div className="mapContainer">
             <Map items={[singlePostData]} />
           </div>
+          {/* chat container */}
+          {chat && (
+        <div className="chatBox">
+          <div className="top">
+            <div className="user">
+              <img src={chat.receiver.avatar || "noavatar.jpg"} alt="" />
+              {chat.receiver.username}
+            </div>
+            <span className="close" onClick={() => setChat(null)}>
+              X
+            </span>
+          </div>
+          <div className="center">
+            {chat.messages.map((message) => {
+              // console.log("Message ID:", message.userId);
+              // console.log("Current User ID:", currentUser.userInfo.id);
+              return (
+                <div
+                  className="chatMessage"
+                  style={{
+                    alignSelf:
+                      message.userId === currentUser.userInfo.id
+                        ? "flex-end"
+                        : "flex-start",
+                    textAlign:
+                      message.userId === currentUser.userInfo.id ? "right" : "left",
+                  }}
+                  key={message.id}
+                >
+                  <p>{message.text}</p>
+                  <span>{format(message.createdAt)}</span>
+                </div>
+              );
+            })}
+            <div ref={messageEndRef}></div>
+          </div>
+          <form onSubmit={handleSubmit} className="bottom">
+            <textarea name="text"></textarea>
+            <button>Send</button>
+          </form>
+        </div>
+      )}
+          {/* chat container ends */}
           <div className="buttons">
-            <button>
+            {currentUser.userInfo.id!==singlePostData.user.id && <button onClick={handleOpenChat}>
               <img src="/chat.png" alt="" />
               Send a Message
-            </button>
+            </button>}
             <button onClick={handleSave} style={{backgroundColor:saved?"#fece51":"#fff"}}>
               <img src="/save.png" alt="" />
               {saved ?"Place Saved":"Save the Place"}

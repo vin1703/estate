@@ -6,6 +6,7 @@ import Map from "../../components/map/Map";
 import { Await, useLoaderData } from "react-router-dom";
 import { Suspense } from "react";
 
+
 function ListPage() {
   const data = useLoaderData();
 

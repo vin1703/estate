@@ -3,24 +3,16 @@ import './profilePage.scss'
 import { Await, Link, useLoaderData } from 'react-router-dom'
 import List from '../../components/list/List'
 import Chat from '../../components/chat/Chat'
-import apiRequest from '../../lib/apiRequest'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext'
 function ProfilePage() {
-  const data = useLoaderData();
   const {updateUser,currentUser} = useContext(AuthContext)
-
+  const data = useLoaderData();
 
   const navigate = useNavigate();
   const handleLogout = async()=>{
-    try{
-      await apiRequest.post("/auth/logout");
       updateUser(null);
       navigate('/');
-
-    }catch(err){
-      console.log(err);
-    }
   }
   return (
     <div className='profilePage'>
@@ -34,9 +26,9 @@ function ProfilePage() {
                 
             </div>
             <div className="info">
-                <span>Avatar: <img src={currentUser?.avatar || 'noavatar.jpg' } alt="" /></span>
-                <span>Username : <b>{currentUser?.username}</b> </span>
-                <span>E-mail : <b>{currentUser?.email}</b>
+                <span>Avatar: <img src={currentUser?.userInfo?.avatar || 'noavatar.jpg' } alt="" /></span>
+                <span>Username : <b>{currentUser?.userInfo.username}</b> </span>
+                <span>E-mail : <b>{currentUser?.userInfo.email}</b>
                  </span>
                  <button onClick={handleLogout}>Logout</button>
             </div>
