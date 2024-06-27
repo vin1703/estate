@@ -14,7 +14,7 @@ function SinglePage() {
 
   // console.log("tokens:"+ currentUser.accessToken);
   const singlePostData = useLoaderData();
-  console.log(singlePostData)
+
   const [saved,setSaved] = useState(singlePostData.isSaved)
   
   const handleSave = async(e)=>{
@@ -43,26 +43,6 @@ function SinglePage() {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const formData = new FormData(e.target);
-    const text = formData.get("text");
-
-    if (!text) return;
-    try {
-      const axiosInstance = userRequest(currentUser?.accessToken)
-      const res = await axiosInstance.post("/message/" + chat.id, { text });
-      setChat((prev) => ({ ...prev, messages: [...prev.messages, res.data] }));
-      e.target.reset();
-      socket.emit("sendMessage", {
-        receiverId: chat.receiver.id,
-        data: res.data,
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  };
   //ends
   console.log(singlePostData)
   return (
