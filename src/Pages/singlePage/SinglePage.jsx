@@ -158,49 +158,8 @@ function SinglePage() {
           <div className="mapContainer">
             <Map items={[singlePostData]} />
           </div>
-          {/* chat container */}
-          {chat && (
-        <div className="chatBox">
-          <div className="top">
-            <div className="user">
-              <img src={chat.receiver.avatar || "noavatar.jpg"} alt="" />
-              {chat.receiver.username}
-            </div>
-            <span className="close" onClick={() => setChat(null)}>
-              X
-            </span>
-          </div>
-          <div className="center">
-            {chat.messages.map((message) => {
-              // console.log("Message ID:", message.userId);
-              // console.log("Current User ID:", currentUser.userInfo.id);
-              return (
-                <div
-                  className="chatMessage"
-                  style={{
-                    alignSelf:
-                      message.userId === currentUser.userInfo.id
-                        ? "flex-end"
-                        : "flex-start",
-                    textAlign:
-                      message.userId === currentUser.userInfo.id ? "right" : "left",
-                  }}
-                  key={message.id}
-                >
-                  <p>{message.text}</p>
-                  <span>{format(message.createdAt)}</span>
-                </div>
-              );
-            })}
-            <div ref={messageEndRef}></div>
-          </div>
-          <form onSubmit={handleSubmit} className="bottom">
-            <textarea name="text"></textarea>
-            <button>Send</button>
-          </form>
-        </div>
-      )}
-          {/* chat container ends */}
+
+          
           <div className="buttons">
             {currentUser.userInfo.id!==singlePostData.user.id && <button onClick={handleOpenChat}>
               <img src="/chat.png" alt="" />

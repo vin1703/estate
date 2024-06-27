@@ -14,7 +14,7 @@ function Navbar() {
             <span>RealEstate</span>
           </a>
           <Link to='/'>Home</Link>
-          <Link to='/list'>Apartments</Link>
+          <Link to='/list'>Properties</Link>
         </div>
         <div  className="right">
           {currentUser ? <div className="user">
