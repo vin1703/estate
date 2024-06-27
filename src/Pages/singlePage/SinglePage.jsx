@@ -1,16 +1,22 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import './singlePage.scss'
 import Slider from '../../components/slider/Slider'
 import Map from '../../components/map/Map'
 // import {singlePostData ,userData } from '../../lib/dummydata'
-import { redirect, useLoaderData, useNavigate } from 'react-router-dom'
+import { Navigate, redirect, useLoaderData, useNavigate } from 'react-router-dom'
 import DOMPurify from 'dompurify'
 import {AuthContext} from "../../context/AuthContext"
 import  { userRequest } from '../../lib/apiRequest'
 
 function SinglePage() {
+
   // console.log("inside ")
   const{ currentUser }= useContext(AuthContext)
+  const navigate = useNavigate();
+  // useEffect(()=>{
+  //   console.log('inside')
+  //   if(!currentUser.accessToken)navigate('/login');
+  // },[navigate,currentUser])
 
   // console.log("tokens:"+ currentUser.accessToken);
   const singlePostData = useLoaderData();
@@ -30,8 +36,7 @@ function SinglePage() {
     }
   }
   //handle chat func
-  const navigate = useNavigate();
-  const [chat,setChat] = useState(null);
+
   const handleOpenChat = async () => {
     try {
       const axiosInstance = userRequest(currentUser?.accessToken);
@@ -46,7 +51,7 @@ function SinglePage() {
   //ends
   console.log(singlePostData)
   return (
-    <div className="singlePage">
+    currentUser ? <div className="singlePage">
       <div className="details">
         <div className="wrapper">
           <Slider images={singlePostData.images} />
@@ -152,7 +157,7 @@ function SinglePage() {
           </div>
         </div>
       </div>
-    </div>
+    </div> : Navigate('/login')
   )
 }
 

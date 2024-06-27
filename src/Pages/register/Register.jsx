@@ -1,9 +1,11 @@
 import "./register.scss";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import  { publicRequest } from "../../lib/apiRequest";
+import { AuthContext } from "../../context/AuthContext";
 
 function Register() {
+    const {updateUser} = useContext(AuthContext);
     const [error,setError] = useState('');
 
     const navigate = useNavigate();
@@ -21,9 +23,11 @@ function Register() {
             const res = await publicRequest.post('/auth/register',{
                 username,email,password
             })
-            navigate('/login');
-        }catch(error){
+            updateUser(res.data);
+            navigate('/')
             setError(error.response.data.message);
+        }catch(err){
+          console.log(err);
         }
         
     }

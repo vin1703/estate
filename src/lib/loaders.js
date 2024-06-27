@@ -5,8 +5,8 @@ import { publicRequest,userRequest } from "./apiRequest"
 
 
 export const singlePageLoader = async ({request,params}) =>{
-    const token = JSON.parse(localStorage.getItem("user")).accessToken;
-    console.log("token:"+token);
+    const token = JSON.parse(localStorage.getItem("user"))?.accessToken;
+    // console.log("token:"+token);
     const axiosInstance = userRequest(token)
     const res = await axiosInstance.get('/post/'+params.id)
     return res.data;
@@ -24,6 +24,7 @@ export const listPageLoader = async ({request,params}) =>{
 export const  profilePageLoader = async()=>{
     const token = JSON.parse(localStorage.getItem("user")).accessToken;
     // console.log("token:"+token);
+    if(!token)return;
     const axiosInstance = userRequest(token)
     const postPromise = axiosInstance.get("/user/profilePosts")
     const chatPromise = axiosInstance.get("/chat")

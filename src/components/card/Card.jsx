@@ -1,15 +1,18 @@
 import { Link } from "react-router-dom";
 import "./card.scss";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 function Card({ item }) {
+  const {currentUser} = useContext(AuthContext);
   return (
     <div className="card">
-      <Link to={`/${item.id}`} className="imageContainer">
+      <Link to={currentUser?`/${item.id}`:'/login'} className="imageContainer">
         <img src={item.images[0]} alt="" />
       </Link>
       <div className="textContainer">
         <h2 className="title">
-          <Link to={`/${item.id}`}>{item.title}</Link>
+          <Link to={currentUser?`/${item.id}`:'/login'}>{item.title}</Link>
         </h2>
         <p className="address">
           <img src="/pin.png" alt="" />
