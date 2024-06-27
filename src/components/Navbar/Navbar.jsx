@@ -26,7 +26,7 @@ function Navbar() {
             </Link>
           </div>:
           <>
-          <Link style={{zIndex:"999"}} to="/login">Sign In</Link>
+          <Link style={{zIndex:"999",color:"white"}} to="/login">Sign In</Link>
           <Link style={{zIndex:"999"}} to="/register" className='register' >Sign Up</Link></>}
           <div className="menuIcon">
             <img src="/menu.png" alt="" onClick={()=>setOpen(prev=>!prev)} />
