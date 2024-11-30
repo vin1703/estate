@@ -10,7 +10,7 @@ function Filter() {
     property: searchParams.get("property") || "",
     minPrice : searchParams.get("minPrice")||0,
     maxPrice : searchParams.get("maxPrice")||100000000,
-    bedroom : searchParams.get("bedroom")||1,
+    bedroom : searchParams.get("bedroom")||'',
   });
   const handleChange = e =>{
     e.preventDefault();
