@@ -14,7 +14,7 @@ L.Icon.Default.mergeOptions({
 
 function Map({items}) {
   return (
-    <MapContainer className='map' center={items.length===1?[items[0].latitude,items[0].longitude]:[28.4731289,77.098466]}zoom={7} scrollWheelZoom={false}>
+    <MapContainer className='map' center={items.length===1?[items[0]?.latitude,items[0]?.longitude]:[28.4731289,77.098466]}zoom={7} scrollWheelZoom={false}>
     <TileLayer
       attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
